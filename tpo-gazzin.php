@@ -64,11 +64,12 @@ class alumno {
 
     // leerDatos
     function imprimirDatos () {
+        echo "---\n";
         echo "apellido: " . $this->apellido. "\n";
         echo "materia: " . $this->materia . "\n";
         echo "nota: " . $this->nota . "\n";
         echo "aprobo:" . $this->aprobo . "\n";
-
+        echo "Es regular: " . $this->regularidad . "\n";
     }
 
 }
@@ -77,7 +78,7 @@ class alumno {
 
 class AlumnoRegular extends alumno {
 
-    public $anioRegularidad;
+    protected $anioRegularidad;
 
     public function __construct($pApellido, $pMateria, $pNota, $pAnioRegularidad) {
 
@@ -105,10 +106,8 @@ class AlumnoRegular extends alumno {
         }
     }    
     
-    function imprimirReglaridad() {
-        echo "Es regular: " . $this->regularidad . "\n";
+    function imprimirRegularidad() {   
         echo "año regularidad: " . $this->anioRegularidad . "\n";
-        echo "---\n";
     }
 }
 
@@ -140,11 +139,8 @@ function agregarAnioSiAlumnoRegular(){
 // instanceof
 function esRegular($alumno) {
     if ($alumno instanceof AlumnoRegular) {
-        echo $alumno-> imprimirReglaridad();
-    } else {
-        echo "Es regular: NO \n";
-        echo "---\n";
-    }
+        echo $alumno-> imprimirRegularidad();
+    } 
 
 }
 
@@ -215,6 +211,7 @@ $alumnoNota=[]; // creacion de arreglo vacio
 $i=0; // inicializar indice del arreglo
 
 while ($exit == false) {
+    echo "---\n";
     echo "Elija una de las siguientes opciones: \n";
     echo "C - Carga de datos \n";
     echo "L - Leer los datos \n";

@@ -1,6 +1,6 @@
 <?php
 
-// codigo TP02 JULIETA GAZZIN 
+// codigo TP02/1 JULIETA GAZZIN 
 /*
 - (1) Utilizar conceptos de herencia e invocación de métodos padres cuando corresponda. 
 Cambiar visibilidad de los atributos y utilizar métodos en los lugares donde accedíamos a los atributos que van a a tener una visibilidad distinta
@@ -13,7 +13,7 @@ Cambiar visibilidad de los atributos y utilizar métodos en los lugares donde ac
 */
 
 class alumno {
-    
+    public $id;
     public $apellido;
     public $materia;
     public $nota;
@@ -25,46 +25,12 @@ class alumno {
         $this->materia = $pMateria;
         $this->nota = $pNota;
 
-        //$alumno->apellido
-        $esNombreValido = !empty($this->apellido);
-            // corrección de datos
-            while ($esNombreValido ==false) {
-                echo "El apellido ingresado no es correcto\n";
-                echo "Ingrese nuevamente el apellido: \n";
-                $this->apellido = strtoupper(trim(fgets(STDIN)));
-                $esNombreValido = !empty($this->apellido);
-            }
-
-        // $alumno->materia 
-        $materiasValidas = ["POO", "MATEMATICAS", "BD"];
-        $materia = $this->materia;
-        $esMateriaValido = in_array($materia,$materiasValidas);
-            // corrección de datos
-            while ($esMateriaValido == false) {
-                echo "La materia ingresada no es correcta\n";
-                echo "Ingrese nuevamente la materia: \n";
-                echo "POO - MATEMATICAS - INGLES\n";
-                $materia = strtoupper(trim(fgets(STDIN)));
-                $esMateriaValido = in_array($materia,$materiasValidas);
-            }
-        $this->materia = $materia;
-
-        // $alumno->nota 
-        $nota = $this->nota;
-        $esNotaValido = ($nota <=10 && $nota > 0);
-            // corrección de datos
-            while ($esNotaValido == false) {
-                echo "La nota ingresada no es válida\n";
-                echo "Ingrese nuevamente la nota en números: \n";
-                $nota = strtoupper(trim(fgets(STDIN)));
-                $esNotaValido = ($nota <=10 && $nota > 0);
-            }
-        $this->nota = $nota;   
     }
 
     // leerDatos
     function imprimirDatos () {
         echo "---\n";
+        echo "ID: " . $this->id . "\n";
         echo "apellido: " . $this->apellido. "\n";
         echo "materia: " . $this->materia . "\n";
         echo "nota: " . $this->nota . "\n";
@@ -83,21 +49,9 @@ class AlumnoRegular extends alumno {
     public function __construct($pApellido, $pMateria, $pNota, $pAnioRegularidad) {
 
         parent::__construct($pApellido, $pMateria, $pNota);
+        $this->id = "AR{$pApellido}";
         $this->anioRegularidad = $pAnioRegularidad;
-
-            // $alumno->anioRegularidad
-            $anioRegularidad = $this->anioRegularidad;
-            $esAnioValido = ($anioRegularidad > 1900 && $anioRegularidad <= 2022);
-            // corrección de datos
-            while ($esAnioValido == false) {
-                echo "El año de regularidad no es válido\n";
-                echo "Ingreselo nuevamente (AAAA): \n";
-                $anioRegularidad = strtoupper(trim(fgets(STDIN)));
-                $esAnioValido = ($anioRegularidad > 1900 && $anioRegularidad <= 2022);
-            }
-            $this->anioRegularidad = $anioRegularidad;
-            $this->regularidad = "SI";
-
+        $this->regularidad = "SI";
            
         if ($pNota >6) {
             $this->aprobo = "SI";
@@ -109,6 +63,7 @@ class AlumnoRegular extends alumno {
     function imprimirRegularidad() {   
         echo "año regularidad: " . $this->anioRegularidad . "\n";
     }
+
 }
 
 
@@ -116,7 +71,7 @@ class alumnoLibre extends alumno {
 
     public function __construct($pApellido, $pMateria, $pNota) {
         parent::__construct ($pApellido, $pMateria, $pNota);
-
+        $this->id = "AL".$pApellido;
         if ($pNota >4) {
             $this->aprobo = "SI";
         } else {
@@ -127,13 +82,65 @@ class alumnoLibre extends alumno {
     }
 }
 
+/* --- FUNCIONES -- */
+
+function validarApellido($apellido) {
+    //$alumno->apellido
+    $esNombreValido = !empty($apellido);
+    // corrección de datos
+    while ($esNombreValido == false) {
+        echo "El apellido ingresado no es correcto\n";
+        echo "Ingrese nuevamente el apellido: \n";
+        $apellido = strtoupper(trim(fgets(STDIN)));
+        $esNombreValido = !empty($apellido);
+    }
+    return $apellido;
+}
+
+function validarMateria ($materia) {
+    // $alumno->materia 
+    $materiasValidas = ["POO", "MATEMATICAS", "BD"];
+    $esMateriaValido = in_array($materia,$materiasValidas);
+        // corrección de datos
+        while ($esMateriaValido == false) {
+            echo "La materia ingresada no es correcta\n";
+            echo "Ingrese nuevamente la materia: \n";
+            echo "POO - MATEMATICAS - BD\n";
+            $materia = strtoupper(trim(fgets(STDIN)));
+            $esMateriaValido = in_array($materia,$materiasValidas);
+        }
+        return $materia;
+}
+
+function validarNota ($nota) {
+    // $alumno->nota 
+    $esNotaValido = ($nota <=10 && $nota > 0);
+        // corrección de datos
+        while ($esNotaValido == false) {
+            echo "La nota ingresada no es válida\n";
+            echo "Ingrese nuevamente la nota en números: \n";
+            $nota = strtoupper(trim(fgets(STDIN)));
+            $esNotaValido = ($nota <=10 && $nota > 0);
+        }
+        return $nota;
+}
+
 
 //solo para regulares
 function agregarAnioSiAlumnoRegular(){
     echo "Anio de regularización \n";
     $anio = strtoupper(trim(fgets(STDIN)));
+
+        // $alumno->anioRegularidad
+        $esAnioValido = ($anio > 1900 && $anio <= 2022);
+        // corrección de datos
+        while ($esAnioValido == false) {
+            echo "El año de regularidad no es válido\n";
+            echo "Ingreselo nuevamente (AAAA): \n";
+            $anio = strtoupper(trim(fgets(STDIN)));
+            $esAnioValido = ($anioRegularidad > 1900 && $anioRegularidad <= 2022);
+        }
     return $anio;
-    // $alumno->anioRegularidad = $anio;
 }
 
 // instanceof
@@ -148,11 +155,11 @@ function cargaDatosA($alumnoNota,$i){
 
     echo "ingrese los datos del alumno: \n";
     echo "apellido del alummo \n";
-    $apellido = strtoupper(trim(fgets(STDIN)));
+    $apellido = validarApellido(strtoupper(trim(fgets(STDIN))));
     echo "materia del alumno: \n";
-    $materia = strtoupper(trim(fgets(STDIN)));
+    $materia = validarMateria(strtoupper(trim(fgets(STDIN))));
     echo "nota de la materia \n";
-    $nota = rtrim(fgets(STDIN));
+    $nota = validarNota(rtrim(fgets(STDIN)));
     echo "es regular la materia? S o N \n";
     $esRegular = strtoupper(trim(fgets(STDIN)));
     if($esRegular=="S"){
@@ -162,8 +169,8 @@ function cargaDatosA($alumnoNota,$i){
     }else{
         $nuevoAlumno = new alumnoLibre($apellido, $materia, $nota);
     }
-    $alumnoNota[$i] = $nuevoAlumno;
-
+    $alumnoNota[$nuevoAlumno->id] = $nuevoAlumno;
+    // print_r ($alumnoNota);  //control
     return $alumnoNota;
 }
 
@@ -181,23 +188,29 @@ function mostrarTodosAlumnos($alumnoNota){
 
 function contarAlumnosXMateria($alumnoNota){
     $totmaterias = [];
-    for($k=0; $k<count($alumnoNota); $k++){
-        $alumnoActual = $alumnoNota[$k];
-        $materia = $alumnoActual->materia;
-        if (array_key_exists($materia,$totmaterias)){ //array_key_exits busca la clave elegida en el arreglo
-            $totmaterias[$materia]++; //contador de materias incrementa en 1
+    foreach ($alumnoNota as $alumno) {
+        $materia = $alumno->materia;
+        if (array_key_exists($materia,$totmaterias)){
+            $totmaterias[$materia]++;
         }else{
-            $totmaterias[$materia]=1; // inicio en 1 una materia que no existia
+            $totmaterias[$materia]=1;
         }
     }
+
     print_r($totmaterias);
 }
 
 function borrarAlumno ($alumnoNota) {
-    echo "Elija el índice del alumno [] a borrar \n";
-    print_r ($alumnoNota);
-    $borrar = rtrim (fgets(STDIN));
-    array_splice($alumnoNota, $borrar, 1);
+    // (no borra ¿?)
+    echo "Elija el ID del alumno [] a borrar \n";
+    // print_r ($alumnoNota);
+    foreach ($alumnoNota as $alumno) {
+        echo "ID: " . $alumno->id . "\n";
+    }
+    $borrar = strtoupper(fgets(STDIN));
+    echo "Borrar: " . $borrar ."\n";
+    unset($alumnoNota[$borrar]);
+    // array_splice($alumnoNota, $borrar, 1);
     print_r ($alumnoNota);
     
     return $alumnoNota;
@@ -209,6 +222,12 @@ function borrarAlumno ($alumnoNota) {
 $exit=false; // variable centinela para salir de while
 $alumnoNota=[]; // creacion de arreglo vacio
 $i=0; // inicializar indice del arreglo
+
+// DEMO control del programa
+$alumnoNota ["ARAL1"]= new alumnoRegular ("AL1", "POO", "7", "2022");
+$alumnoNota ["ALAL2"]= new alumnoLibre ("AL2", "BD", "4");
+$alumnoNota ["ALAL3"]= new alumnoLibre ("AL3", "BD", "2");
+$alumnoNota ["ALAL4"]= new alumnoRegular ("AL4", "POO", "3", "2022");
 
 while ($exit == false) {
     echo "---\n";
@@ -242,7 +261,7 @@ while ($exit == false) {
             echo "Usted eligio Borrar Datos \n";
             $alumnoNota = borrarAlumno($alumnoNota);
             // corrección índice
-            $i--;
+            // $i--;
             break;       
         case "S":
             echo "Gracias, usted saldra del programa \n";

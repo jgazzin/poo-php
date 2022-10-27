@@ -1,12 +1,24 @@
 <?php
 
-// codigo TP01 JULIETA GAZZIN 
+// codigo TP02 JULIETA GAZZIN 
+/*
+- (1) Utilizar conceptos de herencia e invocación de métodos padres cuando corresponda. 
+Cambiar visibilidad de los atributos y utilizar métodos en los lugares donde accedíamos a los atributos que van a a tener una visibilidad distinta
+
+- (2) Incorporar un atributo ID, que sea la clave del elemento en el arreglo (ya no vamos a un arreglo indexado, sino uno asociativo) y un atributo ERRORES para persistir la información delos errores de validación (relacionado al punto siguiente)
+
+- (3) Utilizar la estrategia de comunicación de errores vista en la materia (no hacer echo en el método que valida)
+
+- (4) Agregar un método imprimir en las clase. El método que lista los objetos, no tiene que saber cómo mostrarlo, sino tiene que invocar a un método IMPRIMIR presente en las clases (Nota: el imprimir ya no va a necesitar el instanceof)
+*/
 
 class alumno {
+    
     public $apellido;
     public $materia;
     public $nota;
-    public $aprobo;
+    protected $aprobo;
+    protected $regularidad;
 
     public function __construct($pApellido, $pMateria, $pNota) {
         $this->apellido = $pApellido;
@@ -50,6 +62,15 @@ class alumno {
         $this->nota = $nota;   
     }
 
+    // leerDatos
+    function imprimirDatos () {
+        echo "apellido: " . $this->apellido. "\n";
+        echo "materia: " . $this->materia . "\n";
+        echo "nota: " . $this->nota . "\n";
+        echo "aprobo:" . $this->aprobo . "\n";
+
+    }
+
 }
 
 
@@ -63,24 +84,32 @@ class AlumnoRegular extends alumno {
         parent::__construct($pApellido, $pMateria, $pNota);
         $this->anioRegularidad = $pAnioRegularidad;
 
-        // $alumno->anioRegularidad
-        $anioRegularidad = $this->anioRegularidad;
-        $esAnioValido = ($anioRegularidad > 1900 && $anioRegularidad <= 2022);
-        // corrección de datos
-        while ($esAnioValido == false) {
-            echo "El año de regularidad no es válido\n";
-            echo "Ingreselo nuevamente (AAAA): \n";
-            $anioRegularidad = strtoupper(trim(fgets(STDIN)));
+            // $alumno->anioRegularidad
+            $anioRegularidad = $this->anioRegularidad;
             $esAnioValido = ($anioRegularidad > 1900 && $anioRegularidad <= 2022);
-        }
-        $this->anioRegularidad = $anioRegularidad;
+            // corrección de datos
+            while ($esAnioValido == false) {
+                echo "El año de regularidad no es válido\n";
+                echo "Ingreselo nuevamente (AAAA): \n";
+                $anioRegularidad = strtoupper(trim(fgets(STDIN)));
+                $esAnioValido = ($anioRegularidad > 1900 && $anioRegularidad <= 2022);
+            }
+            $this->anioRegularidad = $anioRegularidad;
+            $this->regularidad = "SI";
 
-        if ($this->nota >4) {
+           
+        if ($pNota >6) {
             $this->aprobo = "SI";
         } else {
             $this->aprobo = "NO";
         }
-    }            
+    }    
+    
+    function imprimirReglaridad() {
+        echo "Es regular: " . $this->regularidad . "\n";
+        echo "año regularidad: " . $this->anioRegularidad . "\n";
+        echo "---\n";
+    }
 }
 
 
@@ -89,11 +118,13 @@ class alumnoLibre extends alumno {
     public function __construct($pApellido, $pMateria, $pNota) {
         parent::__construct ($pApellido, $pMateria, $pNota);
 
-        if ($this->nota >4) {
+        if ($pNota >4) {
             $this->aprobo = "SI";
         } else {
             $this->aprobo = "NO";
         }
+        $this->regularidad = "NO";
+ 
     }
 }
 
@@ -109,11 +140,12 @@ function agregarAnioSiAlumnoRegular(){
 // instanceof
 function esRegular($alumno) {
     if ($alumno instanceof AlumnoRegular) {
-        $regular = "SI";
+        echo $alumno-> imprimirReglaridad();
     } else {
-        $regular = "NO";
+        echo "Es regular: NO \n";
+        echo "---\n";
     }
-    return $regular;
+
 }
 
 function cargaDatosA($alumnoNota,$i){
@@ -130,7 +162,7 @@ function cargaDatosA($alumnoNota,$i){
     if($esRegular=="S"){
         $anioRegularidad =agregarAnioSiAlumnoRegular(); 
         $nuevoAlumno = new AlumnoRegular($apellido, $materia, $nota, $anioRegularidad);
- 
+        
     }else{
         $nuevoAlumno = new alumnoLibre($apellido, $materia, $nota);
     }
@@ -140,25 +172,17 @@ function cargaDatosA($alumnoNota,$i){
 }
 
 function mostrarTodosAlumnos($alumnoNota){
+    // print_r($alumnoNota);   //CONTROL
+
     echo "Total Alumnos: ". count($alumnoNota) . "\n";
     echo "---\n";
     foreach($alumnoNota as $i=>$alumno){
-        echo "Alumno #".($i+1)."\n";
-        echo "Nombre: ".$alumno->apellido."\n";
-        echo "Materia: ".$alumno->materia."\n";
-        echo "Nota: ".$alumno->nota."\n";
-        // instanceof
-        // echo "Regular: ".$alumno->esRegular."\n";
-        // anioRegularidad
-        $regularidad =esRegular($alumno);
-        echo "El alumno es regular: ". $regularidad. "\n";
-        
-        // $aprobo = $alumno->aproboAlumno();
-        echo "Aprobó ".$alumno->aprobo."\n";
-
-        echo "-------------------\n";
+        echo $alumno->imprimirDatos();
+        esRegular ($alumno);
     }
+
 }
+
 function contarAlumnosXMateria($alumnoNota){
     $totmaterias = [];
     for($k=0; $k<count($alumnoNota); $k++){

@@ -36,7 +36,6 @@ class Alumno {
         //$alumno->apellido
         if (empty($this->apellido)){
             $this->errores[] = "Apellido vacío";
-            $this->errores[] = "El ID no se pudo generar";
         }
 
         // $alumno->materia 
@@ -86,10 +85,10 @@ class AlumnoRegular extends Alumno {
 
     protected $anioRegularidad;
 
-    public function __construct($pApellido, $pMateria, $pNota, $pAnioRegularidad) {
+    public function __construct($pApellido, $pMateria, $pNota, $pAnioRegularidad, $i) {
 
-        parent::__construct($pApellido, $pMateria, $pNota);
-        $this->id = "AR{$this->apellido}";
+        parent::__construct($pApellido, $pMateria, $pNota, $i);
+        $this->id = "AR{$this->apellido}-{$i}";
         $this->anioRegularidad = $pAnioRegularidad;
         $this->aprobo();
         $this->validar();
@@ -149,9 +148,9 @@ class AlumnoRegular extends Alumno {
 
 class AlumnoLibre extends Alumno {
 
-    public function __construct($pApellido, $pMateria, $pNota) {
-        parent::__construct ($pApellido, $pMateria, $pNota);
-        $this->id = "AL{$this->apellido}";
+    public function __construct($pApellido, $pMateria, $pNota, $i) {
+        parent::__construct ($pApellido, $pMateria, $pNota, $i);
+        $this->id = "AL{$this->apellido}-{$i}";
         $this->aprobo(); 
         parent::validar();
     }
@@ -191,6 +190,7 @@ class AlumnoLibre extends Alumno {
 //solo para regulares
 function agregarAnioSiAlumnoRegular(){
     $anio = readline("Anio de regularización \n");
+    return $anio;
 }
 
 
@@ -203,9 +203,9 @@ function cargaDatosA($alumnoNota,$i){
     $esRegular = strtoupper(readline("es regular la materia? S o N \n"));
     if($esRegular=="S"){
         $anioRegularidad = agregarAnioSiAlumnoRegular(); 
-        $nuevoAlumno = new AlumnoRegular($apellido, $materia, $nota, $anioRegularidad);
+        $nuevoAlumno = new AlumnoRegular($apellido, $materia, $nota, $anioRegularidad, $i);
     }else{
-        $nuevoAlumno = new alumnoLibre($apellido, $materia, $nota);
+        $nuevoAlumno = new alumnoLibre($apellido, $materia, $nota, $i);
     }
     $alumnoNota[$nuevoAlumno->id()] = $nuevoAlumno;
     print_r ($alumnoNota);  //control
@@ -259,10 +259,13 @@ $alumnoNota=[]; // creacion de arreglo vacio
 $i=0; // inicializar indice del arreglo
 
 // DEMO control del programa
-$alumnoNota ["ARAL1"]= new alumnoRegular ("AL1", "POO", "7", "2022");
-$alumnoNota ["ALAL2"]= new alumnoLibre ("AL2", "BD", "4");
-$alumnoNota ["ALAL3"]= new alumnoLibre ("AL3", "BD", "2");
-$alumnoNota ["ARAL4"]= new alumnoRegular ("AL4", "POO", "3", "2022");
+$alumnoNota ["ARAL1-0"]= new alumnoRegular ("AL1", "POO", "7", "2022",0);
+$alumnoNota ["ALAL2-1"]= new alumnoLibre ("AL2", "BD", "4",1);
+$alumnoNota ["ALAL3-2"]= new alumnoLibre ("AL3", "BD", "2",2);
+$alumnoNota ["ARAL4-3"]= new alumnoRegular ("AL4", "POO", "3", "2022",3);
+
+// correcció índice
+$i = count($alumnoNota);
 
 while ($exit == false) {
     echo "---\n";
@@ -295,8 +298,8 @@ while ($exit == false) {
         case "B":
             echo "Usted eligio Borrar Datos \n";
             $alumnoNota = borrarAlumno($alumnoNota);
-            // corrección índice
-            // $i--;
+            //corrección índice
+            $i--;
             break;       
         case "S":
             echo "Gracias, usted saldra del programa \n";

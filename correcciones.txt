@@ -1,9 +1,4 @@
 
---opcional no realizado
-
-
-
-
 OK CORREGIDOS
 * la definición de aprobado tiene que ser dinámica, porque sino implica que hay que actualizar el atributo aprobo si se modifica algún otro de los atributos. En general, todo dato que sea derivable de un cálculo es mejor que sea un método.
 * pasar la primer letra de las clases a mayúscula (PascalCase)
@@ -21,3 +16,6 @@ OK CORREGIDOS
 
 (1) visibilidad de atributos, entiendo cada caso, lo que no se bien es porqué usar uno u otro, o bien porqué no todos protected.
 -- respuesta: si los atributos se van a heredar, en general van protected, sino vamos a usar private. Si los métodos son para realizar tareas internas, que no deben ser usados de afuera van protected o private, también dependiendo si se heredan o no. En general la mayoría de los métodos va a ser public.
+
+--opcional no realizado ID NO SE REPITE
+

@@ -13,29 +13,71 @@ Cambiar visibilidad de los atributos y utilizar métodos en los lugares donde ac
 */
 
 class Alumno {
-    public $id;
-    public $apellido;
-    public $materia;
-    public $nota;
+    protected $id;
+    protected $apellido;
+    protected $materia;
+    protected $nota;
     protected $aprobo;
+    protected $errores = [];
 
     public function __construct($pApellido, $pMateria, $pNota) {
         $this->apellido = $pApellido;
         $this->materia = $pMateria;
         $this->nota = $pNota;
-
+       
     }
 
+    public function materia(){
+        return $this->materia;
+    }
+
+    //validar datos
+    public function validar(){
+        //$alumno->apellido
+        if (empty($this->apellido)){
+            $this->errores[] = "Apellido vacío";
+            $this->errores[] = "El ID no se pudo generar";
+        }
+
+        // $alumno->materia 
+        if (empty($this->materia)){
+            $this->errores[] = "Materia vacío";
+        } else {
+            $materiasValidas = [
+                "POO", 
+                "MATEMATICAS", 
+                "BD"];
+            $esMateriaValido = in_array($this->materia, $materiasValidas);
+            if ($esMateriaValido == false) {
+                $this->errores[] = "Materia no válida";
+            }
+        }
+
+        // $almno->validarNota
+        if (empty($this->nota)){
+            $this->errores [] = "Nota vacía";
+            } else {
+                if(!is_numeric($this->nota)){
+                    $this->errores [] = "Valor no numérico";
+                } else {
+                    if ($this->nota >10 || $this->nota < 0){
+                    $this->errores [] = "Nota no válida (0-10)";
+                }
+            }
+        }
+    
+    }
+
+
     // leerDatos
-    function imprimirDatos () {
+    public function imprimirDatos () {
         echo "---\n";
         echo "ID: " . $this->id . "\n";
         echo "apellido: " . $this->apellido. "\n";
         echo "materia: " . $this->materia . "\n";
         echo "nota: " . $this->nota . "\n";
-        echo "aprobo:" . $this->aprobo . "\n";
+        echo "Aprobo: " . $this->aprobo . "\n";
     }
-
 }
 
 
@@ -47,19 +89,59 @@ class AlumnoRegular extends Alumno {
     public function __construct($pApellido, $pMateria, $pNota, $pAnioRegularidad) {
 
         parent::__construct($pApellido, $pMateria, $pNota);
-        $this->id = "AR{$pApellido}";
+        $this->id = "AR{$this->apellido}";
         $this->anioRegularidad = $pAnioRegularidad;
-           
-        if ($pNota >6) {
-            $this->aprobo = "SI";
-        } else {
-            $this->aprobo = "NO";
+        $this->aprobo();
+        $this->validar();
+    }
+
+    // validar datos
+    public function validar(){
+        parent::validar();
+        // anios regularidad
+        if (empty($this->anioRegularidad)){
+            $this->errores[] = "Año Regularidad vacío";
+            } else {
+                if (!is_numeric($this->anioRegularidad)){
+                    $this->errores[] = "Año de regularidad no es numérico";
+                    } else {
+                    if ($this->anioRegularidad < 1900 ||
+                    $this->anioRegularidad > 2022) {
+                    $this->errores[] = "El año regularidad no es válido (1900/2022)";
+                    
+                }
+            }
+
         }
     }
+
+    public function id(){
+        return $this->id;
+    }
+
+    public function aprobo(){
+        if (!empty($this->nota)){
+            if ($this->nota >6) {
+                $this->aprobo = "SI";
+            } else {
+                $this->aprobo = "NO";
+            }
+        }
+    }
+
     public function imprimirDatos (){
         parent::imprimirDatos();
         echo "Alumno regular".PHP_EOL;
         echo "año regularidad: " . $this->anioRegularidad . "\n";
+        echo "Errores: \n";
+        if (empty($this->errores)){
+            echo "Alumno Válido\n";
+        } else {
+            foreach ($this->errores as $error) {
+                echo "- " . $error . "\n";
+            }
+        }
+
     }    
 
 }
@@ -69,97 +151,64 @@ class AlumnoLibre extends Alumno {
 
     public function __construct($pApellido, $pMateria, $pNota) {
         parent::__construct ($pApellido, $pMateria, $pNota);
-        $this->id = "AL".$pApellido;
-        if ($pNota >4) {
-            $this->aprobo = "SI";
-        } else {
-            $this->aprobo = "NO";
-        } 
+        $this->id = "AL{$this->apellido}";
+        $this->aprobo(); 
+        parent::validar();
     }
+
+    public function id(){
+        return $this->id;
+    }
+
+    public function aprobo(){
+        if (!empty($this->nota)){
+            if ($this->nota >4) {
+                $this->aprobo = "SI";
+            } else {
+                $this->aprobo = "NO";
+            } 
+        }
+
+    } 
+
+    public function imprimirDatos (){
+        parent::imprimirDatos();
+        echo "Alumno Libre".PHP_EOL;
+        echo "Errores: \n";
+        if (empty($this->errores)){
+            echo "Alumno Válido\n";
+        } else {
+            foreach ($this->errores as $error) {
+                echo $error . "\n";
+            }
+        }
+    }  
+
 }
 
 /* --- FUNCIONES -- */
 
-function validarApellido($apellido) {
-    //$alumno->apellido
-    $esNombreValido = !empty($apellido);
-    // corrección de datos
-    while ($esNombreValido == false) {
-        echo "El apellido ingresado no es correcto\n";
-        echo "Ingrese nuevamente el apellido: \n";
-        $apellido = strtoupper(trim(fgets(STDIN)));
-        $esNombreValido = !empty($apellido);
-    }
-    return $apellido;
-}
-
-function validarMateria ($materia) {
-    // $alumno->materia 
-    $materiasValidas = ["POO", "MATEMATICAS", "BD"];
-    $esMateriaValido = in_array($materia,$materiasValidas);
-        // corrección de datos
-        while ($esMateriaValido == false) {
-            echo "La materia ingresada no es correcta\n";
-            echo "Ingrese nuevamente la materia: \n";
-            echo "POO - MATEMATICAS - BD\n";
-            $materia = strtoupper(trim(fgets(STDIN)));
-            $esMateriaValido = in_array($materia,$materiasValidas);
-        }
-        return $materia;
-}
-
-function validarNota ($nota) {
-    // $alumno->nota 
-    $esNotaValido = ($nota <=10 && $nota > 0);
-        // corrección de datos
-        while ($esNotaValido == false) {
-            echo "La nota ingresada no es válida\n";
-            echo "Ingrese nuevamente la nota en números: \n";
-            $nota = strtoupper(trim(fgets(STDIN)));
-            $esNotaValido = ($nota <=10 && $nota > 0);
-        }
-        return $nota;
-}
-
-
 //solo para regulares
 function agregarAnioSiAlumnoRegular(){
-    echo "Anio de regularización \n";
-    $anio = strtoupper(trim(fgets(STDIN)));
-
-        // $alumno->anioRegularidad
-        $esAnioValido = ($anio > 1900 && $anio <= 2022);
-        // corrección de datos
-        while ($esAnioValido == false) {
-            echo "El año de regularidad no es válido\n";
-            echo "Ingreselo nuevamente (AAAA): \n";
-            $anio = strtoupper(trim(fgets(STDIN)));
-            $esAnioValido = ($anio > 1900 && $anio <= 2022);
-        }
-    return $anio;
+    $anio = readline("Anio de regularización \n");
 }
 
 
 function cargaDatosA($alumnoNota,$i){
 
     echo "ingrese los datos del alumno: \n";
-    echo "apellido del alummo \n";
-    $apellido = validarApellido(strtoupper(trim(fgets(STDIN))));
-    echo "materia del alumno: \n";
-    $materia = validarMateria(strtoupper(trim(fgets(STDIN))));
-    echo "nota de la materia \n";
-    $nota = validarNota(rtrim(fgets(STDIN)));
-    echo "es regular la materia? S o N \n";
-    $esRegular = strtoupper(trim(fgets(STDIN)));
+    $apellido = strtoupper(readline("apellido del alummo \n"));
+    $materia = strtoupper(readline("materia del alumno: \n"));
+    $nota = strtoupper(readline("Ingrese la nota: \n"));
+    $esRegular = strtoupper(readline("es regular la materia? S o N \n"));
     if($esRegular=="S"){
-        $anioRegularidad =agregarAnioSiAlumnoRegular(); 
+        $anioRegularidad = agregarAnioSiAlumnoRegular(); 
         $nuevoAlumno = new AlumnoRegular($apellido, $materia, $nota, $anioRegularidad);
-        
     }else{
         $nuevoAlumno = new alumnoLibre($apellido, $materia, $nota);
     }
-    $alumnoNota[$nuevoAlumno->id] = $nuevoAlumno;
-    // print_r ($alumnoNota);  //control
+    $alumnoNota[$nuevoAlumno->id()] = $nuevoAlumno;
+    print_r ($alumnoNota);  //control
     return $alumnoNota;
 }
 
@@ -177,7 +226,7 @@ function mostrarTodosAlumnos($alumnoNota=[]){
 function contarAlumnosXMateria($alumnoNota){
     $totmaterias = [];
     foreach ($alumnoNota as $alumno) {
-        $materia = $alumno->materia;
+        $materia = $alumno->materia();
         if (array_key_exists($materia,$totmaterias)){
             $totmaterias[$materia]++;
         }else{
@@ -191,9 +240,7 @@ function contarAlumnosXMateria($alumnoNota){
 function borrarAlumno ($alumnoNota) {
     // print_r ($alumnoNota);
     mostrarTodosAlumnos($alumnoNota);
-    var_dump($alumnoNota);
-    echo "Elija el ID del alumno a borrar \n";
-    $borrar = strtoupper(rtrim(fgets(STDIN)));
+    $borrar = strtoupper(readline("Elija el ID del alumno a borrar \n"));
     if(array_key_exists($borrar, $alumnoNota)){
         echo "Borrar: " . $borrar ."\n";
         unset($alumnoNota[$borrar]);

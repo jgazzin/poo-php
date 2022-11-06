@@ -1,0 +1,23 @@
+
+--opcional no realizado
+
+
+
+
+OK CORREGIDOS
+* la definición de aprobado tiene que ser dinámica, porque sino implica que hay que actualizar el atributo aprobo si se modifica algún otro de los atributos. En general, todo dato que sea derivable de un cálculo es mejor que sea un método.
+* pasar la primer letra de las clases a mayúscula (PascalCase)
+* usar rtrim o trim para quitar fin de línea en el valor pedido para borrar OK TODO CON READLINE
+* agregar visibilidad explicitamente a los métodos: aunque funciona sin el agregado de public (porque public es el valor por default), por el momento es mejor acostumbrarse a ponerlo explicitamente.
+* verificar existencia de clave antes de borrar
+* agregué el parámetro por default al mostrar para que no falle luego del último unset de elementos
+* Reutilizar la lógica de mostrar, previo al borrado, para no tener que repetir bucles e impresionesç
+* Positivo: agrega datos de demostración
+* al realizar la impresión desde cada clase, no se necesita el instanceof para saber si es regular. No usar un atributo para persistir la regularidad.
+* controlar valores numéricos con is_numeric
+
+(2-3) Errores, falta. Sigo validando con el while (fuera del constructor ahora) No entiendo cuál sería otra forma en que se pide- guardar con errores¿? -> arrays con un nuevo atributo errores, y luego listar los arrays q tienen ese atributo?
+--respuesta Claro! eso que comentás a lo último sería la idea, aunque parezca algo que está mal, es totalmente posible permitir que un objeto se "complete" para luego preguntar sobre la validez. Lo importante es ver que el conocimiento para determinar si el objeto es válido, en general tiene que estar DENTRO del objeto, eso hace que esa funcionalidad sea reutilizable en diferentes lugares, y no solo al momento de la carga inicial, que tal si quisieras comprobar la validez luego de modificar un atributo. No pienses siempre en una validez física (tipo, tamaño) de un atributo, pensá por ejemplo si tuvieras que validar que un atributo es posible que esté vacío o no, dependiendo de otro atributo.
+
+(1) visibilidad de atributos, entiendo cada caso, lo que no se bien es porqué usar uno u otro, o bien porqué no todos protected.
+-- respuesta: si los atributos se van a heredar, en general van protected, sino vamos a usar private. Si los métodos son para realizar tareas internas, que no deben ser usados de afuera van protected o private, también dependiendo si se heredan o no. En general la mayoría de los métodos va a ser public.

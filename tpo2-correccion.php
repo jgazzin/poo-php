@@ -77,6 +77,17 @@ class Alumno {
         echo "nota: " . $this->nota . "\n";
         echo "Aprobo: " . $this->aprobo . "\n";
     }
+
+    public function imprimirErrores() {
+        echo "Errores: \n";
+        if (empty($this->errores)){
+            echo "Alumno Válido\n";
+        } else {
+            foreach ($this->errores as $error) {
+                echo "- " . $error . "\n";
+            }
+        }
+    }
 }
 
 
@@ -132,15 +143,7 @@ class AlumnoRegular extends Alumno {
         parent::imprimirDatos();
         echo "Alumno regular".PHP_EOL;
         echo "año regularidad: " . $this->anioRegularidad . "\n";
-        echo "Errores: \n";
-        if (empty($this->errores)){
-            echo "Alumno Válido\n";
-        } else {
-            foreach ($this->errores as $error) {
-                echo "- " . $error . "\n";
-            }
-        }
-
+        parent::imprimirErrores();
     }    
 
 }
@@ -173,14 +176,7 @@ class AlumnoLibre extends Alumno {
     public function imprimirDatos (){
         parent::imprimirDatos();
         echo "Alumno Libre".PHP_EOL;
-        echo "Errores: \n";
-        if (empty($this->errores)){
-            echo "Alumno Válido\n";
-        } else {
-            foreach ($this->errores as $error) {
-                echo $error . "\n";
-            }
-        }
+        parent::imprimirErrores();
     }  
 
 }

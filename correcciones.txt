@@ -1,3 +1,9 @@
+HACER
+
+
+
+
+
 
 OK CORREGIDOS
 * la definición de aprobado tiene que ser dinámica, porque sino implica que hay que actualizar el atributo aprobo si se modifica algún otro de los atributos. En general, todo dato que sea derivable de un cálculo es mejor que sea un método.
@@ -18,4 +24,7 @@ OK CORREGIDOS
 -- respuesta: si los atributos se van a heredar, en general van protected, sino vamos a usar private. Si los métodos son para realizar tareas internas, que no deben ser usados de afuera van protected o private, también dependiendo si se heredan o no. En general la mayoría de los métodos va a ser public.
 
 --opcional no realizado ID NO SE REPITE
+
+* cambiar en impresión de errores -> función imprimirErrores en Alumno con la condición
+de empty y llamarla desde imprimirDatos -> parent::imprimirErrores()
 

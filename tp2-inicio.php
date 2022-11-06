@@ -7,11 +7,9 @@
  // COMPLETAR CON LAS DEFINICIONES DE LAS CLASES ALUMNO Y ALUMNO REGULAR, ADECUADAS
  // CON LA HERENCIA Y LA VISIBILIDAD DE ATRIBUTOS ESPERADA
 
+ // - Completar las clases Ejercicio y Menu. El programa arranca creando una instancia de ejercicio con el menú ya definido. En estas clases se deben volver a incorporar las funcionalidades necesarias para que, se presenten las opciones al usuario, se capturen y se realicen las acciones correspondientes. Van a aprender, entre otras cosas, sobre metodos estáticos, y repasar sobre el uso de funciones con parámetros variables. En la plantilla inicial, cuentan con espacios de codificación que deben preservar y utilizar de la manera indicada en los comentarios.
 
 
-/**
- * Clase solamente utilizada para agrupar funciones comunes al sistema
- */
 class Utiles {
     /**
      * Recibe un mensaje, que es un string le pide al usuario con ese mensaje

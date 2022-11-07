@@ -1,23 +1,178 @@
 <?php
-/**
- * Aquí debemos agregar las clases relacionadas al alumno, podemos pegarlas una abajo
- * de la otra, o para quienes se animen, pueden investigar require_once
- */
 
- // COMPLETAR CON LAS DEFINICIONES DE LAS CLASES ALUMNO Y ALUMNO REGULAR, ADECUADAS
- // CON LA HERENCIA Y LA VISIBILIDAD DE ATRIBUTOS ESPERADA
+class Alumno {
+    protected $id;
+    protected $apellido;
+    protected $materia;
+    protected $nota;
+    protected $aprobo;
+    protected $errores = [];
 
- // - Completar las clases Ejercicio y Menu. El programa arranca creando una instancia de ejercicio con el menú ya definido. En estas clases se deben volver a incorporar las funcionalidades necesarias para que, se presenten las opciones al usuario, se capturen y se realicen las acciones correspondientes. Van a aprender, entre otras cosas, sobre metodos estáticos, y repasar sobre el uso de funciones con parámetros variables. En la plantilla inicial, cuentan con espacios de codificación que deben preservar y utilizar de la manera indicada en los comentarios.
+    public function __construct($pApellido, $pMateria, $pNota) {
+        $this->apellido = $pApellido;
+        $this->materia = $pMateria;
+        $this->nota = $pNota;
+    }
+
+    public function materia(){
+        return $this->materia;
+    }
+
+    //validar datos
+    public function validar(){
+        //$alumno->apellido
+        if (empty($this->apellido)){
+            $this->errores[] = "Apellido vacío";
+        }
+
+        // $alumno->materia 
+        if (empty($this->materia)){
+            $this->errores[] = "Materia vacío";
+        } else {
+            $materiasValidas = [
+                "POO", 
+                "MATEMATICAS", 
+                "BD"];
+            $esMateriaValido = in_array($this->materia, $materiasValidas);
+            if ($esMateriaValido == false) {
+                $this->errores[] = "Materia no válida";
+            }
+        }
+
+        // $almno->validarNota
+        if (empty($this->nota)){
+            $this->errores [] = "Nota vacía";
+            } else {
+                if(!is_numeric($this->nota)){
+                    $this->errores [] = "Valor no numérico";
+                } else {
+                    if ($this->nota >10 || $this->nota < 0){
+                    $this->errores [] = "Nota no válida (0-10)";
+                }
+            }
+        }
+    
+    }
+
+
+    // leerDatos
+    public function imprimirDatos () {
+        echo "-------------------\n";
+        echo "ID: " . $this->id . "\n";
+        echo "apellido: " . $this->apellido. "\n";
+        echo "materia: " . $this->materia . "\n";
+        echo "nota: " . $this->nota . "\n";
+        echo "Aprobo: " . $this->aprobo . "\n";
+    }
+
+    public function imprimirErrores() {
+        echo "Errores: \n";
+        if (empty($this->errores)){
+            echo "Alumno Válido\n";
+        } else {
+            foreach ($this->errores as $error) {
+                echo "- " . $error . "\n";
+            }
+        }
+        echo "-----------------\n";
+    }
+}
+
+
+
+class AlumnoRegular extends Alumno {
+
+    protected $anioRegularidad;
+
+    public function __construct($pApellido, $pMateria, $pNota, $pAnioRegularidad, $i) {
+
+        parent::__construct($pApellido, $pMateria, $pNota, $i);
+        $this->id = "AR{$this->apellido}-{$i}";
+        $this->anioRegularidad = $pAnioRegularidad;
+        $this->aprobo();
+        $this->validar();
+    }
+
+    // validar datos
+    public function validar(){
+        parent::validar();
+        // anios regularidad
+        if (empty($this->anioRegularidad)){
+            $this->errores[] = "Año Regularidad vacío";
+            } else {
+                if (!is_numeric($this->anioRegularidad)){
+                    $this->errores[] = "Año de regularidad no es numérico";
+                    } else {
+                    if ($this->anioRegularidad < 1900 ||
+                    $this->anioRegularidad > 2022) {
+                    $this->errores[] = "El año regularidad no es válido (1900/2022)";
+                    
+                }
+            }
+
+        }
+    }
+
+    public function id(){
+        return $this->id;
+    }
+
+    public function aprobo(){
+        if (!empty($this->nota)){
+            if ($this->nota >6) {
+                $this->aprobo = "SI";
+            } else {
+                $this->aprobo = "NO";
+            }
+        }
+    }
+
+    public function imprimirDatos (){
+        parent::imprimirDatos();
+        echo "Alumno regular".PHP_EOL;
+        echo "año regularidad: " . $this->anioRegularidad . "\n";
+        parent::imprimirErrores();
+    }    
+
+}
+
+
+class AlumnoLibre extends Alumno {
+
+    public function __construct($pApellido, $pMateria, $pNota, $i) {
+        parent::__construct ($pApellido, $pMateria, $pNota, $i);
+        $this->id = "AL{$this->apellido}-{$i}";
+        $this->aprobo(); 
+        parent::validar();
+    }
+
+    public function id(){
+        return $this->id;
+    }
+
+    public function aprobo(){
+        if (!empty($this->nota)){
+            if ($this->nota >4) {
+                $this->aprobo = "SI";
+            } else {
+                $this->aprobo = "NO";
+            } 
+        }
+
+    } 
+
+    public function imprimirDatos (){
+        parent::imprimirDatos();
+        echo "Alumno Libre".PHP_EOL;
+        parent::imprimirErrores();
+    }  
+
+}
+
+
 
 
 class Utiles {
-    /**
-     * Recibe un mensaje, que es un string le pide al usuario con ese mensaje
-     * que ingrese un valor
-     * el parámetro $mayuscula determina si se espera que la cadena sea convertida a mayúscula
-     * el parámetro $trim determina si se espera que se le quiten los espacios a la cadena obtenida
-     */
-
     public static function pedirInformacion($mensaje, $mayuscula=true, $quitarEspacios=true){
         echo "$mensaje: ".PHP_EOL;
         $entradaUsuario = fgets(STDIN);
@@ -53,6 +208,18 @@ class Menu {
         // COMPLETAR LAS DEMÁS OPCIONES DEL SWITCH DE ACUERDO AL MENU
 
         switch($opcion){
+            // A- cargar datos
+            case "A":
+                echo "Usted eligio Carga de Datos \n";
+                $nuevoDatosEjercicio = $this->cargarDatos($nuevoDatosEjercicio, $errores);
+                break;
+
+            // B - borrar datos
+            case "B":
+                echo "Usted eligio Borrar Datos \n";
+                $nuevoDatosEjercicio = $this->borrarDatos($nuevoDatosEjercicio, $errores);
+                break;   
+
             case "L":
                 echo "Ejecutando LISTAR DATOS".PHP_EOL; 
                 $this->listarDatos($datosEjercicio);
@@ -63,47 +230,54 @@ class Menu {
 
     private function listarDatos($datosEjercicio){
         // pedir el apellido a buscar
-        var_dump($datosEjercicio);
-        // para cada elemento.. invocar la función IMPRIMIR de ese objeto para mostrarlo
-        // QUITAR VAR_DUMP Y COMPLETAR
-
+        // var_dump($datosEjercicio);
+        echo "Total Alumnos: ". count($datosEjercicio) . "\n";
+        foreach($datosEjercicio as $i=>$alumno){
+            echo $alumno->imprimirDatos();
+        }
     
     }
-    /**
-     * recibe los datos del ejercicio, le pide al usuario los datos para un nuevo
-     * alumno, lo agrega a la lista y lo devuelve al método que lo invocó
-     * TIP: utilizar otro método para tomar los datos del usuario y luego con ese 
-     * resultado, cargarlo al listado
-     */
+
+
     private function cargarDatos($datosEjercicio, &$errores){
-        // COMPLETAR
+
+        $apellido = Utiles::pedirInformacion("Ingrese apellido del alumno:");
+        $materia = Utiles::pedirInformacion("materia del alumno:");
+        $nota = Utiles::pedirInformacion("Ingrese la nota:");
+        $esRegular = Utiles::pedirInformacion("es regular la materia? S o N ");
+        // índice para el ID (para q no se repitan Id si no se graba nombre)
+        $i=count($datosEjercicio);
+        if($esRegular=="S"){
+            $anioRegularidad = Utiles::pedirInformacion("Anio de regularización:");
+            $nuevoAlumno = new AlumnoRegular($apellido, $materia, $nota, $anioRegularidad, $i);
+        }else{
+            $nuevoAlumno = new alumnoLibre($apellido, $materia, $nota, $i);
+        }
+        $datosEjercicio[$nuevoAlumno->id()] = $nuevoAlumno;
+        print_r ($datosEjercicio);  //control
+        return $datosEjercicio;
+
     }
 
-    /**
-     * función para interactuar con el usuario, pidiendo los datos que van a componer el 
-     * alumno resultante.
-     * Devuelve un nuevo objeto a quién lo invoca
-     */
     private function pedirDatosAlumno(){
-
+        // ?? para pedir datos al usuarios usé pedirInformacion()
     }
 
-    /**
-     * recibe los datos del ejercicio, muestra los datos actuales, le pide al usuario
-     * la PK del elemento a borrra, lo borra de la lista y devuelve la lista al método que
-     * lo invocó
-     */
+
     private function borrarDatos($datosEjercicio, &$errores){
-
+        $this->listarDatos($datosEjercicio);
+        $borrar = Utiles::pedirInformacion("Elija el ID del alumno a borrar \n");
+        if(array_key_exists($borrar, $datosEjercicio)){
+            echo "Borrar: " . $borrar ."\n";
+            unset($datosEjercicio[$borrar]);
+            $this->listarDatos($datosEjercicio);      
+        } else {
+            echo "ID inexistente".PHP_EOL;
+        }
+        return $datosEjercicio;
     }
 
-    /**
-     * recibe los datos del ejercicio, muestra los datos actuales, le pide al usuario
-     * la PK del elemento a modificar, le pide al usuario los nuevos datos, cambia el elemento de la lista y
-     * devuelve la lista al método que lo invocó
-     * TIP: utilizar otro método para tomar los datos del usuario y luego con ese 
-     * resultado, reemplazar el elemento anterior: quitar el anterior y agregar el nuevo es válido
-     */
+
     private function modificarDatos($datosEjercicio, &$errores){
 
     }
@@ -123,13 +297,10 @@ class Ejercicio {
             $this->menu->presentarOpciones();
             $opcion = Utiles::pedirInformacion('Elija una opción');
             echo "usted eligió $opcion".PHP_EOL;
-            // inicializo los errores en vacío antes de invocar la acción
             $errores = [];
 
-            // reemplazo los datos actuales, por los que resulten de realizar la acción elegida.
-            // además envío la variable $errores para obtener información de la ejecución    
             $this->datosEjercicio = $this->menu->ejecutarAccion($opcion, $this->datosEjercicio, $errores);        
-            // luego de la función, me fijo si volvieron errores y los imprimo
+
         }while($opcion!=="S");
     }
 }

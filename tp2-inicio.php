@@ -62,7 +62,7 @@ class Alumno {
         echo "apellido: " . $this->apellido. "\n";
         echo "materia: " . $this->materia . "\n";
         echo "nota: " . $this->nota . "\n";
-        echo "Aprobo: " . $this->aprobo . "\n";
+
     }
 
     public function imprimirErrores() {
@@ -129,6 +129,7 @@ class AlumnoRegular extends Alumno {
 
     public function imprimirDatos (){
         parent::imprimirDatos();
+        echo "Aprobo: " . $this->aprobo . "\n";
         echo "Alumno regular".PHP_EOL;
         echo "año regularidad: " . $this->anioRegularidad . "\n";
         parent::imprimirErrores();
@@ -163,12 +164,12 @@ class AlumnoLibre extends Alumno {
 
     public function imprimirDatos (){
         parent::imprimirDatos();
+        echo "Aprobo: " . $this->aprobo . "\n";
         echo "Alumno Libre".PHP_EOL;
         parent::imprimirErrores();
     }  
 
 }
-
 
 
 
@@ -184,8 +185,20 @@ class Utiles {
         }        
         return $entradaUsuario;
     }
-}
 
+    public static function mostrarDatos($datosEjercicio) {
+        // echo "Total Alumnos: ". count($datosEjercicio) . "\n";
+        foreach($datosEjercicio as $alumno){
+            echo $alumno->imprimirDatos();
+        }
+    }
+
+    // muestra 1 solo alumno
+    public static function alumnoDatos($alumno) {
+        $alumno->imprimirDatos();
+    }
+
+}
 class Menu {
     private $opciones = [
                 'A'=>'Cargar datos',
@@ -205,7 +218,6 @@ class Menu {
 
     public function ejecutarAccion($opcion, $datosEjercicio, &$errores){
         $nuevoDatosEjercicio = $datosEjercicio;
-        // COMPLETAR LAS DEMÁS OPCIONES DEL SWITCH DE ACUERDO AL MENU
 
         switch($opcion){
             // A- cargar datos
@@ -219,7 +231,12 @@ class Menu {
                 echo "Usted eligio Borrar Datos \n";
                 $nuevoDatosEjercicio = $this->borrarDatos($nuevoDatosEjercicio, $errores);
                 break;   
-
+            
+            // M - modificar datos
+            case "M":
+                echo "Usted eligió Modificar Datos\n";
+                $nuevoDatosEjercicio = $this->modificarDatos($nuevoDatosEjercicio, $errores);
+                break;
             case "L":
                 echo "Ejecutando LISTAR DATOS".PHP_EOL; 
                 $this->listarDatos($datosEjercicio);
@@ -230,12 +247,21 @@ class Menu {
 
     private function listarDatos($datosEjercicio){
         // pedir el apellido a buscar
-        // var_dump($datosEjercicio);
-        echo "Total Alumnos: ". count($datosEjercicio) . "\n";
-        foreach($datosEjercicio as $i=>$alumno){
-            echo $alumno->imprimirDatos();
+        Utiles::mostrarDatos($datosEjercicio);
+        $clave = Utiles::pedirInformacion("ID del alumno:");
+        // está funcionando buscando por clave ID
+        
+        // $clave = array_search($mostrar, $datosEjercicio);
+        // clave null ¿¿?? no se porqué
+
+
+        if(array_key_exists($clave, $datosEjercicio)){
+            echo "Mostrar: " . $clave ."\n";
+            Utiles::alumnoDatos($datosEjercicio[$clave]);
+ 
+        } else {
+            echo "Apellido inexistente".PHP_EOL;
         }
-    
     }
 
 
@@ -260,17 +286,20 @@ class Menu {
     }
 
     private function pedirDatosAlumno(){
-        // ?? para pedir datos al usuarios usé pedirInformacion()
+        // pasar cargarDatos aca
+        // return 1 solo array para enviar a cargarDatos
+        // en cargarDatos recibir 1 array y agregarlos a datosEjercicio (array_push)
+        // ver que pasa con el id
     }
 
 
     private function borrarDatos($datosEjercicio, &$errores){
-        $this->listarDatos($datosEjercicio);
+        Utiles::mostrarDatos($datosEjercicio);
         $borrar = Utiles::pedirInformacion("Elija el ID del alumno a borrar \n");
         if(array_key_exists($borrar, $datosEjercicio)){
             echo "Borrar: " . $borrar ."\n";
             unset($datosEjercicio[$borrar]);
-            $this->listarDatos($datosEjercicio);      
+            Utiles::mostrarDatos($datosEjercicio);   
         } else {
             echo "ID inexistente".PHP_EOL;
         }
@@ -279,6 +308,18 @@ class Menu {
 
 
     private function modificarDatos($datosEjercicio, &$errores){
+
+        Utiles::mostrarDatos($datosEjercicio);
+        $alumnoModificar = Utiles::pedirInformacion("Indique ID del alumno a modificar:");
+        $datosModificar = $datosEjercicio[$alumnoModificar];
+        Utiles::alumnoDatos($datosModificar);
+        $datoModificar = Utiles::pedirInformacion("indique el dato/atributo a modificar:");
+
+        // array_replace o 
+        // nuevo pedirDatosAlumno para pasar las nuevas variables otra vea a cargarDatos con el mismo Id para q se superponga 
+
+        Utiles::mostrarDatos($datosEjercicio);
+        return $datosEjercicio;
 
     }
 

@@ -17,6 +17,7 @@ class Utiles {
      * el parámetro $mayuscula determina si se espera que la cadena sea convertida a mayúscula
      * el parámetro $trim determina si se espera que se le quiten los espacios a la cadena obtenida
      */
+
     public static function pedirInformacion($mensaje, $mayuscula=true, $quitarEspacios=true){
         echo "$mensaje: ".PHP_EOL;
         $entradaUsuario = fgets(STDIN);

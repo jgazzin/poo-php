@@ -1,22 +1,6 @@
 <?php
 
-interface IMostrable{
-    	public function mostrar();
-}
-
-
-class PlanPago implements IMostrable{
-    private $plan;
-    public function __construct($plan){
-        $this->plan = $plan;
-    }
-    
-    public function mostrar(){
-        echo "Plan: ".$this->plan.PHP_EOL;
-    }
-}
-
-class Chip implements IMostrable
+class Chip
 {
     private $empresa;
     private $numero;
@@ -31,12 +15,9 @@ class Chip implements IMostrable
         echo "\tEmpresa: " . $this->empresa.PHP_EOL;
         echo "\tNumero de cel: " . strval($this->numero).PHP_EOL;
     }
-    public function decirHola(){
-        // nada
-    }
 }
 
-class Bateria implements IMostrable
+class Bateria
 {
     private $mAh;
     private $marca;
@@ -53,8 +34,7 @@ class Bateria implements IMostrable
 }
 
 
-class Celular implements IMostrable {
-    private  $plan;
+class Celular {
     private  $modelo;
     private  $bateria;
     private  $nroChips;
@@ -65,7 +45,7 @@ class Celular implements IMostrable {
         $this->nroChips = 0;
     }
     
-    public function mostrar(){
+    public function morstrar(){
         echo "Modelo: ".$this->modelo.PHP_EOL;
         if($this->bateria) {
         	$this->bateria->mostrar();
@@ -74,12 +54,9 @@ class Celular implements IMostrable {
         for ($i=0; $i < $this->nroChips; $i++){
             $this->chips[$i]->mostrar();
         }
-        if($this->plan){
-            $this->plan->mostrar();
-        }
     }
     
-    public function agregarComponente(IMostrable $componente){
+    public function agregarComponente($componente){
     	echo "Agregando: ".PHP_EOL;
     	$componente->mostrar();
     	echo "______________________".PHP_EOL;
@@ -87,8 +64,6 @@ class Celular implements IMostrable {
     		$this->agregarBateria($componente);
     	}else if($componente instanceof Chip){
     		$this->agregarChip($componente);
-    	}else if($componente instanceof PlanPago){
-    	    $this->agregarPlan($componente);
     	}else {
     		echo "componente inválido".PHP_EOL;
     	}
@@ -104,11 +79,7 @@ class Celular implements IMostrable {
             $this->chips[$this->nroChips]=$nuevoChip;
             $this->nroChips++;
         }
-    }
-    
-    private function agregarPlan(PlanPago $plan){
-        $this->plan = $plan;
-    }
+    } 
 }
 
 class Aplicacion{
@@ -117,15 +88,13 @@ class Aplicacion{
             
         $entel = new Chip("Entel", 7457854);
         $tigo = new Chip("Tigo", 83743843);
-
+        
         $bat = new Bateria(3400, "Samsung");
-        $plan = new PlanPago('30g Por mes');
         $c1->agregarComponente($entel);
         $c1->agregarComponente($tigo);
         $c1->agregarComponente($bat);
-        $c1->agregarComponente($plan);
-
-        $c1->mostrar();
+        
+        $c1->morstrar();
     }
 }
 

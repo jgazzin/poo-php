@@ -1,5 +1,7 @@
 HACER
-
+El programa arranca creando una instancia de ejercicio con el menú ya definido.
+En estas clases se deben volver a incorporar las funcionalidades necesarias para que, se presenten las opciones al usuario, se capturen y se realicen las acciones correspondientes.
+En la plantilla inicial, cuentan con espacios de codificación que deben preservar y utilizar de la manera indicada en los comentarios.
 
 
 

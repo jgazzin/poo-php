@@ -17,6 +17,12 @@ class Alumno {
     public function materia(){
         return $this->materia;
     }
+    public function apellido(){
+        return $this->apellido;
+    }
+    public function id(){
+        return $this->id;
+    }
 
     //validar datos
     public function validar(){
@@ -187,16 +193,21 @@ class Utiles {
     }
 
     public static function mostrarDatos($datosEjercicio) {
-        // echo "Total Alumnos: ". count($datosEjercicio) . "\n";
+        echo "Total Alumnos: ". count($datosEjercicio) . "\n";
         foreach($datosEjercicio as $alumno){
             echo $alumno->imprimirDatos();
         }
     }
 
-    // muestra 1 solo alumno
-    public static function alumnoDatos($alumno) {
-        $alumno->imprimirDatos();
+    public static function verDatos($datosEjercicio) {
+        echo "Total Alumnos: ". count($datosEjercicio) . "\n";
+        foreach($datosEjercicio as $alumno){
+            echo "ID: {$alumno->id()}\n";
+            echo "Apellido: {$alumno->apellido()}\n";
+            echo "----------------\n";
+        }
     }
+
 
 }
 class Menu {
@@ -247,20 +258,13 @@ class Menu {
 
     private function listarDatos($datosEjercicio){
         // pedir el apellido a buscar
-        Utiles::mostrarDatos($datosEjercicio);
-        $clave = Utiles::pedirInformacion("ID del alumno:");
-        // está funcionando buscando por clave ID
-        
-        // $clave = array_search($mostrar, $datosEjercicio);
-        // clave null ¿¿?? no se porqué
+        Utiles::verDatos($datosEjercicio);
+        $mostrar = Utiles::pedirInformacion("Apellido del alumno:");
 
-
-        if(array_key_exists($clave, $datosEjercicio)){
-            echo "Mostrar: " . $clave ."\n";
-            Utiles::alumnoDatos($datosEjercicio[$clave]);
- 
-        } else {
-            echo "Apellido inexistente".PHP_EOL;
+        foreach($datosEjercicio as $alumno){
+            if ($mostrar == $alumno->apellido()){
+                echo $alumno->imprimirDatos();
+            } 
         }
     }
 
@@ -286,20 +290,17 @@ class Menu {
     }
 
     private function pedirDatosAlumno(){
-        // pasar cargarDatos aca
-        // return 1 solo array para enviar a cargarDatos
-        // en cargarDatos recibir 1 array y agregarlos a datosEjercicio (array_push)
-        // ver que pasa con el id
+        //  ¿??? para pedir info usé Utiles::pedirInformacion
     }
 
 
     private function borrarDatos($datosEjercicio, &$errores){
-        Utiles::mostrarDatos($datosEjercicio);
+        Utiles::verDatos($datosEjercicio);
         $borrar = Utiles::pedirInformacion("Elija el ID del alumno a borrar \n");
         if(array_key_exists($borrar, $datosEjercicio)){
             echo "Borrar: " . $borrar ."\n";
             unset($datosEjercicio[$borrar]);
-            Utiles::mostrarDatos($datosEjercicio);   
+            Utiles::verDatos($datosEjercicio);   
         } else {
             echo "ID inexistente".PHP_EOL;
         }
@@ -309,16 +310,17 @@ class Menu {
 
     private function modificarDatos($datosEjercicio, &$errores){
 
-        Utiles::mostrarDatos($datosEjercicio);
-        $alumnoModificar = Utiles::pedirInformacion("Indique ID del alumno a modificar:");
-        $datosModificar = $datosEjercicio[$alumnoModificar];
-        Utiles::alumnoDatos($datosModificar);
-        $datoModificar = Utiles::pedirInformacion("indique el dato/atributo a modificar:");
+        Utiles::verDatos($datosEjercicio);
+        $modificar = Utiles::pedirInformacion("Indique ID del alumno a modificar:");
+        $datosModificar = $datosEjercicio[$modificar];
+        print_r($datosModificar);
+
+        // $datoModificar = Utiles::pedirInformacion("indique el dato/atributo a modificar:");
 
         // array_replace o 
         // nuevo pedirDatosAlumno para pasar las nuevas variables otra vea a cargarDatos con el mismo Id para q se superponga 
 
-        Utiles::mostrarDatos($datosEjercicio);
+        // Utiles::mostrarDatos($datosEjercicio);
         return $datosEjercicio;
 
     }
@@ -331,6 +333,20 @@ class Ejercicio {
 
     public function __construct(){
         $this->menu = new Menu();
+        $this->demo();
+    }
+
+    public function demo(){
+    // DEMO control del programa
+    $alDemo1= new alumnoRegular ("AL1", "POO", "7", "2022",0);
+    $alDemo2= new alumnoLibre ("AL2", "BD", "4",1);
+    $alDemo3= new alumnoLibre ("AL3", "BD", "2",2);
+    $alDemo4= new alumnoRegular ("AL4", "POO", "3", "2022",3);
+    $this->datosEjercicio = [
+        "ARAL1-0"=>$alDemo1,
+        "ALAL2-1"=>$alDemo2,
+        "ALAL3-2"=>$alDemo3,
+        "ARAL4-3"=>$alDemo4];
     }
 
     public function iniciarEjercicio(){
@@ -339,7 +355,6 @@ class Ejercicio {
             $opcion = Utiles::pedirInformacion('Elija una opción');
             echo "usted eligió $opcion".PHP_EOL;
             $errores = [];
-
             $this->datosEjercicio = $this->menu->ejecutarAccion($opcion, $this->datosEjercicio, $errores);        
 
         }while($opcion!=="S");

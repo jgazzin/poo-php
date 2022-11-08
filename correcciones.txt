@@ -1,7 +1,8 @@
 HACER
 - Modificar datos
 - corregir buscar por apellido - no por id
-
+** ver como sacar errores: funciones que actualizan dos variables para devolver dos cosas, datosEjerciico + errores
+** agregar en el constructor de iniciarEjercicio los datos de DEMO para control 
 
 
 

@@ -290,7 +290,15 @@ class Menu {
     }
 
     private function pedirDatosAlumno(){
-        //  ¿??? para pedir info usé Utiles::pedirInformacion
+        /*  dividir cargarDatos:
+        1º pedir datos - return array con las variables apellido, materia, nota, esregular
+        2º mandar array a cargarDatos donde se pasan al constructor, generan id + aprobo y anioregularidad
+        --
+        modificar
+        1º pedir datos modificables (apellido, materia, nota, esregular)
+        2º nuevo array para mandar a cargarDatos (OJO tiene q pisar el ID = índce)
+
+        */
     }
 
 
@@ -315,12 +323,8 @@ class Menu {
         $datosModificar = $datosEjercicio[$modificar];
         print_r($datosModificar);
 
-        // $datoModificar = Utiles::pedirInformacion("indique el dato/atributo a modificar:");
+        // falta terminar - ver pedirDatosAlumno
 
-        // array_replace o 
-        // nuevo pedirDatosAlumno para pasar las nuevas variables otra vea a cargarDatos con el mismo Id para q se superponga 
-
-        // Utiles::mostrarDatos($datosEjercicio);
         return $datosEjercicio;
 
     }
